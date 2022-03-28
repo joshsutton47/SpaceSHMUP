@@ -48,7 +48,7 @@ public class Enemy : MonoBehaviour
     {
         Move();
 
-        //Check if bounds check exists and the object is off the bottom of the screne
+        //Check if bounds check exists and the object is off the bottom of the screene
         if(bndCheck != null && bndCheck.offDown)
         {
               Destroy(gameObject); //destory the object

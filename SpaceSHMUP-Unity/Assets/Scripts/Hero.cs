@@ -39,12 +39,11 @@ public class Hero : MonoBehaviour
 
     GameManager gm; //reference to game manager
 
+    #region Variables
     [Header("Ship Movement")]
     public float speed = 10;
     public float rollMult = -45;
     public float pitchMult = 30;
-
-
 
     [Space(10)]
 
@@ -53,7 +52,9 @@ public class Hero : MonoBehaviour
     [SerializeField] //show in inspector
     private float _shieldLevel = 1; //level for shields
     public int maxShield = 4; //maximum shield level
-    
+
+    #endregion
+
     //method that acts as a field (property), if the property falls below zero the game object is desotryed
     public float shieldLevel
     {
@@ -113,9 +114,22 @@ public class Hero : MonoBehaviour
     //Taking Damage
     private void OnTriggerEnter(Collider other)
     {
-  
-
+        Transform rootT = other.gameObject.transform.root;
+        GameObject go = rootT.gameObject;
+        if(go == lastTriggerGo) { return; }
+        lastTriggerGo = go; //sets the lastTrigger to current trigger
+        if(go.tag == "Enemy")
+        {
+            Debug.Log("Triggered by enemy " + go.name);
+            _shieldLevel--;
+            Destroy(go);
+        }
+        else
+        {
+            Debug.Log("Triggered by non-enemy " + go.name);
+        }
 
     }//end OnTriggerEnter()
 
+    //public float shieldLevel { get { return(_shieldLevel); } }
 }
