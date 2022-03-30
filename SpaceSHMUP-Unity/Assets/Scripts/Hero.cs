@@ -3,7 +3,7 @@
  * Date Created: March 16, 2022
  * 
  * Last Edited by: Josh Sutton
- * Last Edited: March 21, 2022
+ * Last Edited: March 30, 2022
  * 
  * Description: Hero ship controller
 ****/
@@ -52,6 +52,9 @@ public class Hero : MonoBehaviour
     [SerializeField] //show in inspector
     private float _shieldLevel = 1; //level for shields
     public int maxShield = 4; //maximum shield level
+
+    public GameObject projectilePrefab;
+    public float projectileSpeed = 40;
 
     #endregion
 
@@ -108,8 +111,21 @@ public class Hero : MonoBehaviour
         //rotate the ship to make more dynamic feel
         transform.rotation = Quaternion.Euler(yAxis * pitchMult, xAxis * rollMult, 0);
 
+        //Allow the ship to fire
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TempFire();
+        }//end space
+
     }//end Update()
 
+    void TempFire()
+    {
+        GameObject projGO = Instantiate<GameObject>(projectilePrefab);
+        projGO.transform.position = transform.position;
+        Rigidbody rb = projGO.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.up * projectileSpeed;
+    }
 
     //Taking Damage
     private void OnTriggerEnter(Collider other)
@@ -123,13 +139,19 @@ public class Hero : MonoBehaviour
             Debug.Log("Triggered by enemy " + go.name);
             _shieldLevel--;
             Destroy(go);
+            gm.LostLife();
         }
         else
         {
             Debug.Log("Triggered by non-enemy " + go.name);
         }
 
-    }//end OnTriggerEnter()
+        
 
-    //public float shieldLevel { get { return(_shieldLevel); } }
+    }//end OnTriggerEnter()
+    public void AddScore(int value)
+    {
+        gm.UpdateScore(value);
+    }
+
 }
